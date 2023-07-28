@@ -155,7 +155,7 @@ def get_pretrained_model(model_dir='', weights=PRETRAIN_MODEL, len_target=1000):
     num_features = model._fc.in_features
     # Add custom layer with custom number of output classes
     model._fc = nn.Linear(num_features, len_target)
-    print(model)
+    # print(model)
     
     # If load personal pre-trained model
     if model_dir != '':
@@ -353,7 +353,7 @@ def train_model(model, criterion, optimizer, scheduler, dataset=TRAIN, num_epoch
         before_lr = optimizer.param_groups[0]["lr"]
         scheduler.step()
         after_lr = optimizer.param_groups[0]["lr"]
-        print("\n[TRAIN MODEL] Epoch %d: lr %.6f -> %.6f" % (epoch+1, before_lr, after_lr))
+        print("\n[TRAIN MODEL] Epoch %d: lr %f -> %f" % (epoch+1, before_lr, after_lr))
         
         # Save data to plot graph
         losses.append(avg_loss.cpu())
@@ -398,7 +398,7 @@ if __name__ == '__main__':
     # Define model requirements
     criterion = nn.CrossEntropyLoss()
     optimizer_ft = optim.Adam(model.parameters(), lr=1e-3, momentum=0.9)
-    exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=7, gamma=0.5)
+    exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=10, gamma=0.5)
     # Evaluate before training
     # print("[INFO] Before training evaluation in progress...")
     # eval_model(model, criterion, dataset=TEST)
