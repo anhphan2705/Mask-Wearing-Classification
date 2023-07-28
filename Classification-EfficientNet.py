@@ -65,7 +65,7 @@ def get_data(file_dir, batch_size=8, shuffle=True, num_workers=4):
             os.path.join(file_dir, file),
             transform=data_transform[file]
         )
-        for file in [TRAIN, VAL, TEST]
+        for file in [TRAIN, VAL]
     }
     # Load data into dataloaders
     dataloaders = {
@@ -75,12 +75,12 @@ def get_data(file_dir, batch_size=8, shuffle=True, num_workers=4):
             shuffle=shuffle,
             num_workers=num_workers
         )
-        for file in [TRAIN, VAL, TEST]
+        for file in [TRAIN, VAL]
     }
     # Get class names and dataset sizes
     class_names = datasets_img[TRAIN].classes
-    datasets_size = {file: len(datasets_img[file]) for file in [TRAIN, VAL, TEST]}
-    for file in [TRAIN, VAL, TEST]:
+    datasets_size = {file: len(datasets_img[file]) for file in [TRAIN, VAL]}
+    for file in [TRAIN, VAL]:
         print(f"[INFO] Loaded {datasets_size[file]} images under {file}")
     print(f"Classes: {class_names}")
 
@@ -353,7 +353,7 @@ def train_model(model, criterion, optimizer, scheduler, dataset=TRAIN, num_epoch
         before_lr = optimizer.param_groups[0]["lr"]
         scheduler.step()
         after_lr = optimizer.param_groups[0]["lr"]
-        print("\n[TRAIN MODEL] Epoch %d: lr %.4f -> %.4f" % (epoch+1, before_lr, after_lr))
+        print("\n[TRAIN MODEL] Epoch %d: lr %.6f -> %.6f" % (epoch+1, before_lr, after_lr))
         
         # Save data to plot graph
         losses.append(avg_loss.cpu())
@@ -397,7 +397,7 @@ if __name__ == '__main__':
     model = model.to(device)
     # Define model requirements
     criterion = nn.CrossEntropyLoss()
-    optimizer_ft = optim.SGD(model.parameters(), lr=1e-3, momentum=0.9)
+    optimizer_ft = optim.Adam(model.parameters(), lr=1e-3, momentum=0.9)
     exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=7, gamma=0.5)
     # Evaluate before training
     # print("[INFO] Before training evaluation in progress...")
