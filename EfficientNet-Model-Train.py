@@ -216,7 +216,7 @@ def save_classification_report(truth_values, pred_values, out_report_dir):
             f.write('\n')
         
 
-def eval_model(model, criterion, dataset=VAL):
+def eval_model(model, criterion, acc, dataset=VAL):
     """
     Evaluate the model's performance on the specified dataset.
 
@@ -277,7 +277,7 @@ def eval_model(model, criterion, dataset=VAL):
     print(f"[Evaluation Model] Avg loss         ({dataset}): {avg_loss:.4f}")
     print(f"[Evaluation Model] Avg accuracy     ({dataset}): {avg_accuracy:.4f}")
     get_classification_report(truth_values, pred_values)
-    if dataset == TEST:
+    if dataset == TEST or avg_accuracy > acc:
         save_classification_report(truth_values, pred_values, out_report_dir)
     print('-' * 60)
     return avg_loss, avg_accuracy
@@ -347,7 +347,7 @@ def train_model(model, criterion, optimizer, scheduler, dataset=TRAIN, num_epoch
         print('')
 
         # Validate
-        avg_loss_val, avg_accuracy_val = eval_model(model, criterion, dataset=VAL)
+        avg_loss_val, avg_accuracy_val = eval_model(model, criterion, best_accuracy, dataset=VAL)
         
         # Adjust learning rate
         before_lr = optimizer.param_groups[0]["lr"]
@@ -391,13 +391,13 @@ if __name__ == '__main__':
     # Get Data
     datasets_img, datasets_size, dataloaders, class_names = get_data(file_dir)
     # Get pre-trained model
-    model = get_pretrained_model(len_target=2)
-    # model = get_pretrained_model(model_dir='./output/9960/VGG16_trained_9960.pth', len_target=2)      # If load custom pre-trained model, watch out to match len target
+    # model = get_pretrained_model(len_target=2)
+    model = get_pretrained_model(model_dir='./EfficientNet-Models/B0/9120-sgd/trained_model.pth', len_target=2)      # If load custom pre-trained model, watch out to match len target
     torch.cuda.empty_cache()
     model = model.to(device)
     # Define model requirements
     criterion = nn.CrossEntropyLoss()
-    optimizer_ft = optim.Adam(model.parameters(), lr=1e-3, momentum=0.9)
+    optimizer_ft = optim.SGD(model.parameters(), lr=1e-3)
     exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=10, gamma=0.5)
     # Evaluate before training
     # print("[INFO] Before training evaluation in progress...")
