@@ -14,13 +14,13 @@ import copy
 
 ## Define file directories
 file_dir = './data'
-out_model_dir = './EfficientNet-Models/B0/trained_model.pth'
-out_plot_dir = './EfficientNet-Models/B0/epoch_progress.jpg'
-out_report_dir = './EfficientNet-Models/B0/classification_report.txt'
+out_model_dir = './EfficientNet-Models/B4/trained_model.pth'
+out_plot_dir = './EfficientNet-Models/B4/epoch_progress.jpg'
+out_report_dir = './EfficientNet-Models/B4/classification_report.txt'
 TRAIN = 'train' 
 VAL = 'val'
 TEST = 'test'
-PRETRAIN_MODEL = 'efficientnet-b0'
+PRETRAIN_MODEL = 'efficientnet-b4'
 IMAGE_SIZE = 224
 
 
@@ -392,18 +392,18 @@ if __name__ == '__main__':
     datasets_img, datasets_size, dataloaders, class_names = get_data(file_dir)
     # Get pre-trained model
     # model = get_pretrained_model(len_target=2)
-    model = get_pretrained_model(model_dir='./EfficientNet-Models/B0/9120-sgd/trained_model.pth', len_target=2)      # If load custom pre-trained model, watch out to match len target
+    model = get_pretrained_model(model_dir='./EfficientNet-Models/B4/9320/trained_model.pth', len_target=2)      # If load custom pre-trained model, watch out to match len target
     torch.cuda.empty_cache()
     model = model.to(device)
     # Define model requirements
     criterion = nn.CrossEntropyLoss()
-    optimizer_ft = optim.SGD(model.parameters(), lr=1e-3)
+    optimizer_ft = optim.Adam(model.parameters(), lr=1e-3)
     exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=10, gamma=0.5)
     # Evaluate before training
     # print("[INFO] Before training evaluation in progress...")
     # eval_model(model, criterion, dataset=TEST)
     # Training
-    model = train_model(model, criterion, optimizer_ft, exp_lr_scheduler, num_epochs=50)
+    model = train_model(model, criterion, optimizer_ft, exp_lr_scheduler, num_epochs=30)
     torch.save(model.state_dict(), out_model_dir)
     # Evaluate after training
     # print("[INFO] After training evaluation in progress...")

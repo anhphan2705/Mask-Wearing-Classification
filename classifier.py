@@ -13,7 +13,7 @@ import argparse
 
 MODEL_DIRECTORY = './EfficientNet-Models/B0/9350/trained_model.pth'
 FONT = "arial.ttf"
-FONT_SIZE = 20
+FONT_SIZE = 25
 PRETRAIN_MODEL = 'efficientnet-b0'
 
 use_gpu = torch.cuda.is_available()
@@ -90,7 +90,7 @@ def assign_image_label(images, labels, confs, font="arial.ttf", font_size=25):
     font_setting = ImageFont.truetype(font, font_size)
     for i, image in enumerate(images):
         image = Image.fromarray(image)
-        image = image.resize((400, 400))
+        # image = image.resize((400, 400))
         I1 = ImageDraw.Draw(image)
         # I1.text((10, 10), f"{labels[index]} ({confs[index]:4f})", fill=(255, 0, 0), font=font_setting)                # with confidence index
         I1.text((10, 10), f"{labels[i]}", fill=(0, 255, 0), font=font_setting)                                      # without confidence index
